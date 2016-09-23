@@ -1,17 +1,21 @@
-// config: urls
+// config variables
 var mobile_url = 'http://m.domain.com';
 var desktop_url = 'http://domain.com';
 var max_mobile_width = 800;
+
+// redirecting user based on cookie contents
+function redirect(result) {
+	if (result === true) { window.location = mobile_url; }
+}
 
 // writing cookie
 function writeCookie(result) {
 	document.cookie = "is_mobile=" + result + "; expires=Sun, 27 Dec 2099 12:00:00 UTC";
 }
-
-// detecting max resolution and redirecting if < 800 pixels
+// detecting max resolution and redirecting if >=  max_mobile_width
 function checkWidth() {
 	var width = window.screen.width;
-	if (width < max_mobile_width + 1) { 
+	if (width <= max_mobile_width) { 
 		console.log("mobile user detected; redirecting")
 		writeCookie(true);
 		return true; 
@@ -22,10 +26,7 @@ function checkWidth() {
 	}
 }
 
-function redirect(result) {
-	if (result === true) { window.location = mobile_url; }
-}
-
+// parsing cookie
 function fetchCookie(cookieName) {
 	var name = cookieName + "=";
 	var ca = document.cookie.split(';');
@@ -37,6 +38,7 @@ function fetchCookie(cookieName) {
 	return "";
 }
 
+// checking for a cookie; if exists, redirect. if not, write one and redirect
 function checkCookie() {
 	var is_mobile = fetchCookie("is_mobile");
 	if (is_mobile != "") {
